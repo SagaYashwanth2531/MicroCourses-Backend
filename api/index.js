@@ -27,10 +27,21 @@ connectDB().then(async () => {
 // Middleware
 app.use(helmet());
 app.use(compression());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+
+// Robust CORS configuration: allows comma-separated origins in FRONTEND_URLS or single FRONTEND_URL
+const rawOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '').split(',').map(o => o.trim()).filter(Boolean);
+const defaultOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+const allowedOrigins = rawOrigins.length > 0 ? rawOrigins : defaultOrigins;
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow non-browser tools
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS not allowed for this origin'));
+  },
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

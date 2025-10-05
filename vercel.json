@@ -12,11 +12,5 @@
       "dest": "api/index.js"
     }
   ],
-  "env": {
-    "MONGO_URI": "@mongo_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "NODE_ENV": "production",
-    "ADMIN_EMAIL": "@admin_email",
-    "ADMIN_PASSWORD": "@admin_password"
-  }
+  "env": {}
 }
